@@ -1,0 +1,10 @@
+{
+  "name": "materials-dealer-field",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ثبت میدانی مصالح‌فروشی‌های کرمان: وب‌اپ موبایل + داشبورد مدیر (Vercel + Neon)",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  }
+}

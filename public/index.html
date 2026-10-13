@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b45309">
+<title>ثبت اطلاعات مصالح‌فروشی‌ها</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">🧱</span><div><b>بازارگاه مصالح</b><small>ثبت اطلاعات میدانی · کرمان</small></div></div>
+  <button id="syncChip" class="chip-status" type="button" aria-label="وضعیت همگام‌سازی"><i></i><span>…</span></button>
+</header>
+
+<main id="view"></main>
+
+<nav class="tabs" aria-label="منوی اصلی">
+  <button data-go="form" class="on"><span>📝</span>فرم جدید</button>
+  <button data-go="list"><span>📋</span>ثبت‌شده‌ها <em id="cnt">0</em></button>
+  <button data-go="settings"><span>⚙️</span>تنظیمات</button>
+</nav>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<datalist id="hoods"></datalist>
+
+<script src="fields.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

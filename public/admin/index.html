@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>داشبورد مصالح کرمان</title>
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+@font-face{font-family:Vazirmatn;src:url(../fonts/Vazirmatn.woff2) format("woff2");font-weight:100 900}
+:root{--bg:#f6f8fa;--card:#fff;--ink:#1c1917;--mute:#6b7280;--line:#e5e7eb;--brand:#b45309;--sky:#2b7fb8;--soft:#fef3e2;--ok:#15803d;--bad:#b91c1c}
+@media(prefers-color-scheme:dark){:root{--bg:#13171b;--card:#1d2329;--ink:#eef2f6;--mute:#9aa4af;--line:#2c353e;--brand:#f59e0b;--sky:#6cb6e8;--soft:#33270f}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Vazirmatn,Tahoma,sans-serif;line-height:1.7}
+button,input,select,textarea{font:inherit;color:inherit}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 20px;background:var(--sky);color:#fff;position:sticky;top:0;z-index:5}
+header h1{font-size:1.1rem;margin:0;margin-inline-end:auto}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{border:0;background:rgba(255,255,255,.18);color:#fff;padding:6px 14px;border-radius:99px;cursor:pointer}
+nav button.on{background:#fff;color:#6b4226;font-weight:700}
+main{max-width:1280px;margin:0 auto;padding:18px 16px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.kpi b{display:block;font-size:1.8rem;color:var(--brand)}.kpi small{color:var(--mute)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+h3{margin:0 0 10px;font-size:1rem}
+.bar{display:grid;grid-template-columns:minmax(90px,38%) 1fr 34px;gap:8px;align-items:center;font-size:.85rem;margin:5px 0}
+.bar i{display:block;height:14px;border-radius:7px;background:var(--brand)}
+.bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+input,select,textarea{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:7px 12px}
+textarea{width:100%;min-height:130px;font-family:Consolas,monospace;direction:ltr;text-align:left}
+.btn{border:1.5px solid var(--line);background:var(--card);border-radius:10px;padding:7px 14px;cursor:pointer}
+.btn.p{background:var(--brand);border-color:var(--brand);color:#fff}
+.tw{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;max-width:280px;overflow:hidden;text-overflow:ellipsis}
+th{position:sticky;top:0;background:var(--soft);cursor:pointer}
+tbody tr:hover{background:var(--soft);cursor:pointer}
+.b{font-size:.72rem;padding:1px 9px;border-radius:99px}.hot{background:#dcfce7;color:#166534}.warm{background:#fef9c3;color:#854d0e}.cold{background:#fee2e2;color:#991b1b}
+#drawer{position:fixed;inset:0 auto 0 0;width:min(520px,100%);background:var(--card);border-inline-end:1px solid var(--line);box-shadow:4px 0 30px rgba(0,0,0,.25);transform:translateX(-102%);transition:.2s;z-index:20;overflow:auto;padding:16px}
+#drawer.open{transform:none}
+#drawer dl{margin:0}#drawer dt{color:var(--mute);font-size:.78rem;margin-top:10px}#drawer dd{margin:0;font-weight:600}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}
+.photos figure{margin:0}.photos img{width:100%;border-radius:10px;display:block;cursor:zoom-in}.photos figcaption{font-size:.75rem;color:var(--mute)}
+#map{height:68vh;border-radius:14px;border:1px solid var(--line)}
+.err{color:var(--bad)}.note{color:var(--mute);font-size:.82rem}
+#login{max-width:340px;margin:18vh auto;text-align:center}
+#login input{width:100%;margin:10px 0}
+.hide{display:none!important}
+.ex{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.ex button{font-size:.78rem}
+</style>
+</head>
+<body>
+<div id="login" class="card">
+  <h2>🔒 ورود مدیر</h2>
+  <input id="pw" type="password" placeholder="رمز مدیر" autocomplete="current-password" dir="ltr">
+  <button class="btn p" id="go" style="width:100%">ورود</button>
+  <p class="err" id="lerr"></p>
+</div>
+
+<div id="app" class="hide">
+<header>
+  <h1>🧱 داشبورد مصالح‌فروشی‌های کرمان</h1>
+  <nav>
+    <button data-t="stats" class="on">خلاصه</button><button data-t="stores">فروشگاه‌ها</button>
+    <button data-t="map">نقشه</button><button data-t="sql">کوئری</button>
+  </nav>
+  <button class="btn" id="out">خروج</button>
+</header>
+<main>
+  <section id="t-stats"></section>
+  <section id="t-stores" class="hide">
+    <div class="tools">
+      <input id="q" type="search" placeholder="جست‌وجو نام، مالک، تلفن، محله…" style="flex:1;min-width:200px">
+      <select id="fl"><option value="">همهٔ آمادگی‌ها</option><option value="hot">آمادهٔ همکاری</option><option value="warm">نیازمند توضیح</option><option value="cold">فعلاً خیر</option></select>
+      <select id="fc"><option value="">همهٔ گروه‌های کالا</option></select>
+      <select id="fh"><option value="">همهٔ محله‌ها</option></select>
+      <button class="btn" id="csvAll">⬇️ همهٔ پاسخ‌ها (CSV)</button>
+      <button class="btn" id="csvView">⬇️ جدول فعلی</button>
+    </div>
+    <div class="note" id="cnt"></div>
+    <div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
+  </section>
+  <section id="t-map" class="hide"><div id="map"></div><p class="note">نشانه‌ها: سبز = آمادهٔ همکاری، زرد = نیازمند توضیح، قرمز = فعلاً خیر، خاکستری = نامشخص.</p></section>
+  <section id="t-sql" class="hide">
+    <div class="card">
+      <h3>کنسول SQL (فقط‌خواندنی)</h3>
+      <div class="ex" id="ex"></div>
+      <textarea id="sqlIn" spellcheck="false"></textarea>
+      <div class="tools" style="margin-top:8px"><button class="btn p" id="run">▶ اجرا (Ctrl+Enter)</button><button class="btn" id="csvQ">⬇️ CSV نتیجه</button><span id="qinfo" class="note"></span></div>
+      <p class="note">جدول‌ها: <b>v_stores</b> (نمای تخت و ساده)، <b>visits</b> (پاسخ کامل در ستون JSON با <code>data-&gt;&gt;'key'</code>)، <b>visit_items</b> (پاسخ‌های چندگزینه‌ای)، <b>photos</b> (id, visit_id, kind, bytes).</p>
+    </div>
+    <div class="tw"><table><thead id="qh"></thead><tbody id="qb"></tbody></table></div>
+  </section>
+</main>
+<aside id="drawer"></aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="../fields.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const el = (t, a = {}, ...k) => { const e = document.createElement(t); for (const [x, v] of Object.entries(a)) x === 'class' ? e.className = v : x.startsWith('on') ? e.addEventListener(x.slice(2), v) : e.setAttribute(x, v); e.append(...k.flat().filter(x => x != null)); return e; };
+const FA = '۰۱۲۳۴۵۶۷۸۹', fa = n => String(n).replace(/\d/g, d => FA[d]);
+let KEY = sessionStorage.getItem('adm') || '', stores = [], sortK = 'received_at', sortD = -1, map, layer, lastQ = { rows: [], fields: [] };
+const LEAD = { hot: 'آمادهٔ همکاری', warm: 'نیازمند توضیح', cold: 'فعلاً خیر' };
+
+async function api(a, opt = {}) {
+  const r = await fetch('/api/admin?a=' + a + (opt.qs || ''), { method: opt.body ? 'POST' : 'GET', headers: { 'X-Api-Key': KEY, 'Content-Type': 'application/json' }, body: opt.body && JSON.stringify(opt.body) });
+  if (r.status === 401) { sessionStorage.removeItem('adm'); location.reload(); }
+  const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status); return j;
+}
+async function login() {
+  KEY = $('#pw').value || KEY;
+  try { const r = await fetch('/api/admin?a=stats', { headers: { 'X-Api-Key': KEY } }); if (!r.ok) throw 0; sessionStorage.setItem('adm', KEY); start(await r.json()); }
+  catch { $('#lerr').textContent = 'رمز نادرست است یا سرور در دسترس نیست'; }
+}
+$('#go').onclick = login; $('#pw').onkeydown = e => e.key === 'Enter' && login(); $('#out').onclick = () => { sessionStorage.clear(); location.reload(); };
+if (KEY) login();
+
+function start(stats) {
+  $('#login').classList.add('hide'); $('#app').classList.remove('hide');
+  renderStats(stats); loadStores();
+  document.querySelectorAll('nav button').forEach(b => b.onclick = () => tab(b.dataset.t));
+  $('#sqlIn').value = EXAMPLES[0][1];
+  EXAMPLES.forEach(([t, q]) => $('#ex').append(el('button', { class: 'btn', onclick: () => { $('#sqlIn').value = q; runQ(); } }, t)));
+}
+function tab(t) {
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  ['stats', 'stores', 'map', 'sql'].forEach(x => $('#t-' + x).classList.toggle('hide', x !== t));
+  if (t === 'map') drawMap(); if (t === 'stats') api('stats').then(renderStats);
+}
+
+/* ---- آمار ---- */
+function bars(title, rows) {
+  const max = Math.max(1, ...rows.map(r => r.n));
+  return el('div', { class: 'card' }, el('h3', {}, title), rows.length ? rows.map(r => el('div', { class: 'bar' }, el('span', { title: r.k }, r.k), el('i', { style: `width:${r.n / max * 100}%` }), el('b', {}, fa(r.n)))) : el('p', { class: 'note' }, 'هنوز داده‌ای نیست'));
+}
+function renderStats(s) {
+  const t = s.tot, k = (n, l) => el('div', { class: 'kpi' }, el('b', {}, fa(n)), el('small', {}, l));
+  $('#t-stats').replaceChildren(
+    el('div', { class: 'cards' }, k(t.total, 'کل بازدیدها'), k(t.final, 'ثبت نهایی'), k(t.hot, 'آمادهٔ همکاری'), k(t.warm, 'نیازمند توضیح'), k(t.cold, 'فعلاً خیر'), k(t.geo, 'دارای موقعیت'), k(t.photos, 'عکس')),
+    el('div', { class: 'grid2' }, bars('بازدید به تفکیک روز', s.byDay), bars('گروه‌های کالایی عرضه‌شده', s.byCat), bars('محله‌ها', s.byHood), bars('مشکلات تأمین', s.byProb), bars('پرسشگرها', s.bySrv)));
+}
+
+/* ---- فروشگاه‌ها ---- */
+async function loadStores() {
+  stores = (await api('stores')).rows;
+  const opt = (sel, vals) => { const c = sel.firstElementChild; sel.replaceChildren(c, ...vals.map(v => el('option', { value: v }, v))); };
+  opt($('#fh'), [...new Set(stores.map(s => s.neighborhood).filter(Boolean))].sort());
+  opt($('#fc'), [...new Set(stores.flatMap(s => (s.categories || '').split(' | ')).filter(Boolean))].sort());
+  ['q', 'fl', 'fc', 'fh'].forEach(i => $('#' + i).oninput = drawTable); drawTable();
+}
+const COLS = [['name', 'نام'], ['owner', 'مالک'], ['phone_mobile', 'همراه'], ['neighborhood', 'محله'], ['categories', 'گروه‌های کالا'], ['lead', 'آمادگی'], ['photo_count', 'عکس'], ['visit_date', 'تاریخ'], ['surveyor', 'پرسشگر'], ['unit_code', 'کد']];
+function viewRows() {
+  const q = $('#q').value.trim(), l = $('#fl').value, c = $('#fc').value, h = $('#fh').value;
+  return stores.filter(s => (!l || s.lead === l) && (!h || s.neighborhood === h) && (!c || (s.categories || '').includes(c)) &&
+    (!q || [s.name, s.owner, s.phone_mobile, s.phone_main, s.neighborhood, s.unit_code].some(v => String(v || '').includes(q))))
+    .sort((a, b) => (a[sortK] > b[sortK] ? 1 : a[sortK] < b[sortK] ? -1 : 0) * sortD);
+}
+function drawTable() {
+  const rows = viewRows(); $('#cnt').textContent = `${fa(rows.length)} از ${fa(stores.length)} فروشگاه`;
+  $('#th').replaceChildren(el('tr', {}, COLS.map(([k, t]) => el('th', { onclick: () => { sortD = sortK === k ? -sortD : 1; sortK = k; drawTable(); } }, t + (sortK === k ? (sortD > 0 ? ' ▲' : ' ▼') : '')))));
+  $('#tb').replaceChildren(...rows.map(r => el('tr', { onclick: () => detail(r.id) }, COLS.map(([k]) => el('td', {}, k === 'lead' ? (r.lead ? el('span', { class: 'b ' + r.lead }, LEAD[r.lead]) : '') : String(r[k] ?? ''))))));
+}
+async function detail(id) {
+  const d = $('#drawer'); d.classList.add('open'); d.replaceChildren(el('p', {}, 'در حال بارگذاری…'));
+  const { data, photos } = await api('detail', { qs: '&id=' + encodeURIComponent(id) });
+  const dl = el('dl');
+  SECTIONS.forEach(s => s.fields.forEach(f => {
+    if (f.t === 'photo') return; let v;
+    if (f.t === 'loc') v = data.loc_lat != null ? `${(+data.loc_lat).toFixed(6)}, ${(+data.loc_lng).toFixed(6)}` + (data.loc_link ? ' · ' + data.loc_link : '') : data.loc_link;
+    else if (f.t === 'top3') v = [data.top1, data.top2, data.top3].filter(Boolean).join('، ');
+    else { v = data[f.k]; if (Array.isArray(v)) v = v.join('، '); if (f.other && data[f.k + '_other']) v = (v ? v + ' — ' : '') + 'سایر: ' + data[f.k + '_other']; }
+    if (v) dl.append(el('dt', {}, (f.n ? fa(f.n) + '. ' : '') + f.label), el('dd', {}, String(v)));
+  }));
+  const ph = el('div', { class: 'photos' });
+  d.replaceChildren(el('div', { class: 'tools' }, el('button', { class: 'btn', onclick: () => d.classList.remove('open') }, '✕ بستن'),
+    data.loc_lat != null ? el('a', { class: 'btn', target: '_blank', href: `https://www.google.com/maps?q=${data.loc_lat},${data.loc_lng}` }, '🗺️ نقشه') : null,
+    el('button', { class: 'btn', style: 'color:var(--bad)', onclick: async () => { if (confirm('این فروشگاه و عکس‌هایش برای همیشه حذف شود؟')) { await api('delete', { body: { id } }); d.classList.remove('open'); loadStores(); } } }, '🗑️ حذف')),
+    el('h2', {}, data.name || '(بدون نام)'), ph, dl);
+  for (const p of photos) { // عکس با هدر احراز هویت دریافت می‌شود
+    const r = await fetch('/api/photo?id=' + encodeURIComponent(p.id), { headers: { 'X-Api-Key': KEY } });
+    if (r.ok) { const u = URL.createObjectURL(await r.blob()); ph.append(el('figure', {}, el('img', { src: u, onclick: () => window.open(u) }), el('figcaption', {}, p.kind || ''))); }
+  }
+}
+
+/* ---- CSV ---- */
+function csv(fields, rows) {
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const tel = f => /phone|mobile|tel|همراه|تماس|شماره/i.test(f);
+  return '﻿' + [fields.map(q).join(','), ...rows.map(r => fields.map(f => (tel(f) && r[f] ? q('\t' + r[f]) : q(r[f]))).join(','))].join('\r\n');
+}
+function save(name, text) { const a = el('a', { href: URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' })), download: name }); document.body.append(a); a.click(); a.remove(); }
+$('#csvView').onclick = () => save('stores.csv', csv(COLS.map(c => c[0]), viewRows()));
+$('#csvAll').onclick = async () => {
+  const { rows } = await api('all'), F = SECTIONS.flatMap(s => s.fields).filter(f => f.t !== 'photo');
+  const flat = rows.map(r => { const o = {}; F.forEach(f => {
+    if (f.t === 'loc') { o['عرض'] = r.loc_lat ?? ''; o['طول'] = r.loc_lng ?? ''; o['لینک نقشه'] = r.loc_link ?? ''; return; }
+    if (f.t === 'top3') { o['پرفروش ۱'] = r.top1 ?? ''; o['پرفروش ۲'] = r.top2 ?? ''; o['پرفروش ۳'] = r.top3 ?? ''; return; }
+    const n = (f.n ? f.n + '. ' : '') + f.label; o[n] = Array.isArray(r[f.k]) ? r[f.k].join(' | ') : r[f.k] ?? ''; if (f.other) o[n + ' (سایر)'] = r[f.k + '_other'] ?? '';
+  }); o['آمادگی'] = LEAD[r.lead] || ''; o['شناسه'] = r.id; return o; });
+  save('all-answers.csv', csv(Object.keys(flat[0] || {}), flat));
+};
+
+/* ---- نقشه ---- */
+function drawMap() {
+  if (!window.L) return $('#map').textContent = 'برای نقشه به اینترنت نیاز است';
+  if (!map) { map = L.map('map').setView([30.2839, 57.0834], 12); L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map); }
+  setTimeout(() => map.invalidateSize(), 50); layer?.remove(); layer = L.layerGroup().addTo(map);
+  const col = { hot: '#16a34a', warm: '#eab308', cold: '#dc2626' }, pts = [];
+  stores.filter(s => s.lat != null).forEach(s => { pts.push([s.lat, s.lng]);
+    L.circleMarker([s.lat, s.lng], { radius: 9, color: '#fff', weight: 2, fillColor: col[s.lead] || '#6b7280', fillOpacity: .95 }).addTo(layer)
+      .bindTooltip(s.name || '').on('click', () => detail(s.id)); });
+  if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 15 });
+}
+
+/* ---- کوئری ---- */
+const EXAMPLES = [
+  ['همهٔ فروشگاه‌ها', "SELECT name, owner, phone_mobile, neighborhood, lead, categories, photo_count\nFROM v_stores\nORDER BY received_at DESC"],
+  ['آمادهٔ همکاری', "SELECT name, owner, phone_mobile, neighborhood, categories\nFROM v_stores\nWHERE lead = 'hot'"],
+  ['میلگرد می‌فروشند', "SELECT v.name, v.phone_mobile, v.neighborhood, v.lead\nFROM visits v JOIN visit_items i ON i.visit_id = v.id\nWHERE i.field = 'categories' AND i.value = 'میلگرد و آهن‌آلات'"],
+  ['تعداد به تفکیک محله', "SELECT neighborhood, count(*) AS n,\n       count(*) FILTER (WHERE lead = 'hot') AS hot\nFROM visits GROUP BY 1 ORDER BY n DESC"],
+  ['مشکلات تأمین', "SELECT value AS problem, count(*) AS n\nFROM visit_items WHERE field = 'supply_problems'\nGROUP BY 1 ORDER BY n DESC"],
+  ['دارای حمل تا پروژه', "SELECT name, phone_mobile, delivery FROM v_stores\nWHERE delivery LIKE 'بله%'"],
+  ['بدون عکس', "SELECT name, neighborhood, surveyor FROM v_stores WHERE photo_count = 0"],
+  ['تکراری‌های احتمالی', "SELECT phone_mobile, count(*) AS n, string_agg(name, ' | ') AS names\nFROM visits WHERE phone_mobile IS NOT NULL\nGROUP BY 1 HAVING count(*) > 1"],
+];
+async function runQ() {
+  $('#qinfo').textContent = 'در حال اجرا…'; $('#qinfo').className = 'note';
+  try {
+    const t = performance.now(), r = await api('query', { body: { sql: $('#sqlIn').value } }); lastQ = r;
+    $('#qinfo').textContent = `${fa(r.rows.length)} ردیف · ${fa(Math.round(performance.now() - t))} میلی‌ثانیه`;
+    $('#qh').replaceChildren(el('tr', {}, r.fields.map(f => el('th', {}, f))));
+    $('#qb').replaceChildren(...r.rows.map(row => el('tr', {}, r.fields.map(f => el('td', { title: typeof row[f] === 'object' ? JSON.stringify(row[f]) : String(row[f] ?? '') }, row[f] !== null && typeof row[f] === 'object' ? JSON.stringify(row[f]) : String(row[f] ?? ''))))));
+  } catch (e) { $('#qinfo').textContent = e.message; $('#qinfo').className = 'err'; }
+}
+$('#run').onclick = runQ; $('#csvQ').onclick = () => lastQ.rows.length && save('query.csv', csv(lastQ.fields, lastQ.rows));
+$('#sqlIn').onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runQ(); } };
+</script>
+</body>
+</html>
