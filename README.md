@@ -1,7 +1,9 @@
 # ثبت میدانی مصالح‌فروشی‌های کرمان
-1. `run.bat` (یا `python server.py`) را اجرا کنید؛ آدرس و **کلید دسترسی** چاپ می‌شود.
-2. روی کامپیوتر: http://localhost:8000 — داده‌ها در `data/visits.db` (SQLite؛ با DB Browser for SQLite قابل مشاهده) ذخیره می‌شوند.
-3. خروجی کامل برای اکسل: `http://localhost:8000/api/visits.csv?key=<کلید>` یا دکمهٔ «خروجی اکسل» در اپ.
-4. روی موبایل در میدان: اپ را روی یک هاست **HTTPS** بگذارید (GPS و نصب PWA فقط با HTTPS کار می‌کند؛ روی http://IP-شبکه کار نمی‌کند). راه سریع: `cloudflared tunnel --url http://localhost:8000`، یا اجرای سرور با `--cert/--key`. سپس در تنظیمات اپ، کلید را وارد کنید.
-5. اپ آفلاین کار می‌کند؛ هر فرم ابتدا روی گوشی ذخیره و با اتصال به سرور خودکار ارسال می‌شود.
-ساختار فرم در `public/fields.js` و پایگاه داده در `schema.sql` است.
+
+وب‌اپ موبایل (PWA، آفلاین‌محور) برای پرسشگر + داشبورد مدیر. بک‌اند: Vercel Functions، دیتابیس: Neon Postgres.
+
+- **پرسشگر:** `https://materials-dealer-kerman.vercel.app/?k=<SUBMIT_KEY>` — فقط می‌تواند ثبت کند؛ بعد از ارسال، داده از گوشی پاک می‌شود و راهی برای دیدن یا خروجی گرفتن ندارد.
+- **مدیر:** `/admin/` با `ADMIN_PASSWORD` — آمار، جدول با فیلتر، نقشه، عکس‌ها، کنسول SQL فقط‌خواندنی، خروجی CSV.
+- **تنظیمات (Vercel → Environment Variables):** `DATABASE_URL` (از Neon)، `SUBMIT_KEY`، `ADMIN_PASSWORD`. جدول‌ها خودکار ساخته می‌شوند.
+- **ساختار فرم:** `public/fields.js`. جدول‌ها: `visits`، `visit_items`، `photos` و نمای `v_stores` (در `api/_lib.js`).
+- دسترسی مستقیم SQL: کنسول Neon (Vercel → Storage).
