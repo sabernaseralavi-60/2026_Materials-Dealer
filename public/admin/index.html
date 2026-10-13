@@ -117,7 +117,7 @@ async function login() {
   try { const r = await fetch('/api/admin?a=stats', { headers: { 'X-Api-Key': KEY } }); if (!r.ok) throw 0; sessionStorage.setItem('adm', KEY); start(await r.json()); }
   catch { $('#lerr').textContent = 'رمز نادرست است یا سرور در دسترس نیست'; }
 }
-$('#go').onclick = login; $('#pw').onkeydown = e => e.key === 'Enter' && login(); $('#out').onclick = () => { sessionStorage.clear(); location.reload(); };
+$('#go').onclick = login; $('#pw').addEventListener('keydown', e => { if (e.key === 'Enter') login(); }); $('#out').onclick = () => { sessionStorage.clear(); location.reload(); };
 if (KEY) login();
 
 function start(stats) {
